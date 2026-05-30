@@ -1,0 +1,196 @@
+{
+  "name": "Appointment Booking",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "6d99eb14-3043-45da-8a4c-870a3e3b95b7",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "3f03b3a9-2b7d-4ca2-a800-c439932fe1f8",
+      "name": "Webhook",
+      "webhookId": "6d99eb14-3043-45da-8a4c-870a3e3b95b7"
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ new Date(new Date($('Webhook').item.json.body.data.fields[4].value).getTime() - 24*60*60*1000).toISOString() }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        416,
+        0
+      ],
+      "id": "f4c79dbc-7224-4cab-b60d-66d84704f96a",
+      "name": "Wait",
+      "webhookId": "d97469ce-367b-4b56-a5af-42d0bc574295"
+    },
+    {
+      "parameters": {
+        "resume": "specificTime",
+        "dateTime": "={{ new Date(new Date($('Webhook').item.json.body.data.fields[4].value).getTime() + 4*60*60*1000).toISOString() }}"
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        832,
+        0
+      ],
+      "id": "ffa90f7b-bba6-4ae1-9451-ee855e8cead3",
+      "name": "Wait1",
+      "webhookId": "b581949a-8e67-4be4-9677-ed67dee251c6"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.body.data.fields[2].value}}",
+        "subject": "Appointment Booking Confirmed",
+        "message": "=<p>Hi {{ $json.body.data.fields[0].value }},</p>\n\n<p>Your appointment has been confirmed! Here are your details:</p>\n\n<p><b>Service:</b> {{ $json.body.data.fields[3].options.find(o => o.id === $json.body.data.fields[3].value[0]).text }}</p>\n\n<p><b>Date:</b> {{ $json.body.data.fields[4].value }}</p>\n\n<p><b>Time:</b> {{ $json.body.data.fields[5].options.find(o => o.id === $json.body.data.fields[5].value[0]).text }}</p>\n\n<p>We look forward to seeing you!</p>\n\n<p>Warm regards,<br>The Team</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "7cb0acfa-54a3-4b53-ab55-cd62e1fda631",
+      "name": "Confirmation Email",
+      "webhookId": "e9c764f7-7b1a-44f2-8353-16cacc26f42c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "xco1Qc7S2n1fGPOZ",
+          "name": "Bolaji - Gmail OAuth2 API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.data.fields[2].value }}",
+        "subject": "Reminder: Your Appointment is Tomorrow! 🗓️",
+        "message": "=<p>Hi {{ $('Webhook').item.json.body.data.fields[0].value }},</p>\n\n<p>Just a friendly reminder that your appointment is <b>tomorrow!</b></p>\n\n<p><b>Service:</b> {{ $('Webhook').item.json.body.data.fields[3].options.find(o => o.id === $('Webhook').item.json.body.data.fields[3].value[0]).text }}</p>\n\n<p><b>Date:</b> {{ $('Webhook').item.json.body.data.fields[4].value }}</p>\n\n<p><b>Time:</b> {{ $('Webhook').item.json.body.data.fields[5].options.find(o => o.id === $('Webhook').item.json.body.data.fields[5].value[0]).text }}</p>\n\n<p>See you soon! 😊</p>\n\n<p>Warm regards,<br>The Team</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "6f6a1e20-f75f-48b8-b04b-4973ff966b5e",
+      "name": "Reminder Email",
+      "webhookId": "294e8f70-03cd-4798-82fc-b2dea478370b",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "18obVShLFXktgAOF",
+          "name": "COLC - Gmail account 5"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Webhook').item.json.body.data.fields[2].value }}",
+        "subject": "How  was your appointment?",
+        "message": "=<p>Hi {{ $('Webhook').item.json.body.data.fields[0].value }},</p>\n\n<p>We hope your appointment went well today!</p>\n\n<p>We'd love to hear how your experience was. Your feedback means a lot to us and helps us serve you better.</p>\n\n<p>Could you take a moment to share how it went? Simply reply to this email 😊</p>\n\n<p>Thank you for choosing us. We look forward to seeing you again!</p>\n\n<p>Warm regards,<br>The Team</p>",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1040,
+        0
+      ],
+      "id": "eaf00a86-ac17-4f12-aef8-69f1f18142e7",
+      "name": "Follow Up Email",
+      "webhookId": "41a78fe8-c9cd-4dd9-ad20-ce188c32432d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "18obVShLFXktgAOF",
+          "name": "COLC - Gmail account 5"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Confirmation Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Reminder Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait1": {
+      "main": [
+        [
+          {
+            "node": "Follow Up Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmation Email": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reminder Email": {
+      "main": [
+        [
+          {
+            "node": "Wait1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "2236a7c6-82ff-42a7-8aa9-60980b8ba922",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "5330b24fec260746310ab481325a33686ac1f45840e1b59eee2c57a9846e8110"
+  },
+  "id": "X0k7Pjq5T9virlyz",
+  "tags": []
+}
