@@ -1,5 +1,6 @@
 # Appointment Booking Automation
 
+![Workflow](appointment booking.png)
 An automated appointment booking system for small businesses built with n8n and Tally.
 
 ## What it does
